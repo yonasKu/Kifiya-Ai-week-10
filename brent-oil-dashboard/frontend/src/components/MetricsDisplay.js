@@ -1,14 +1,16 @@
 import React from 'react';
 
-function MetricsDisplay({ metrics }) {
+const MetricsDisplay = ({ metrics }) => {
     return (
         <div>
-            <h3>Performance Metrics</h3>
-            <p>MAE: {metrics.MAE}</p>
-            <p>MSE: {metrics.MSE}</p>
-            <p>R2 Score: {metrics.R2}</p>
+            <h2>Metrics</h2>
+            <ul>
+                {metrics.map((metric, index) => (
+                    <li key={index}>{metric.name}: {metric.value}</li>
+                ))}
+            </ul>
         </div>
     );
-}
+};
 
 export default MetricsDisplay;

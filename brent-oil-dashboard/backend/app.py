@@ -1,10 +1,9 @@
-# backend/app.py
-
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import pandas as pd
 from models import load_model, forecast_markov_switching
 from analysis_utils import get_event_correlation, get_performance_metrics
+
 app = Flask(__name__)
 CORS(app)
 
@@ -16,7 +15,6 @@ def forecast():
     """API to forecast future Brent oil prices."""
     data = request.get_json()
     
-    # Check for 'steps' in the request body
     if 'steps' not in data:
         return jsonify({"error": "Number of steps is required."}), 400
     
@@ -25,16 +23,17 @@ def forecast():
     # Generate forecast using the model
     forecast_values = forecast_markov_switching(ms_result, steps)
     
-    # Return forecast as JSON response
     return jsonify({"forecast": forecast_values.tolist()})
 
 @app.route('/api/prices', methods=['GET'])
 def get_prices():
     """API to get historical Brent oil prices."""
-    # Load historical data (replace with the actual path)
     df = pd.read_csv("data/BrentOilPrices.csv")  # Adjust this line
-    return jsonify(df.to_dict(orient='records'))
 
+    # Convert NaN values to None for JSON serialization
+    df = df.where(pd.notnull(df), None)  # This will replace NaN with None
+
+    return jsonify(df.to_dict(orient='records'))
 
 @app.route('/api/events', methods=['GET'])
 def get_events():

@@ -1,8 +1,6 @@
 # backend/models.py
-
 import pickle
 import numpy as np
-import pandas as pd
 
 # Path to your saved model
 MODEL_PATH = "saved_models/markov_switching_model.pkl"
@@ -19,6 +17,8 @@ def forecast_markov_switching(ms_result, steps=5):
     last_price = ms_result.fittedvalues.iloc[-1]
     current_regime = np.argmax(ms_result.smoothed_marginal_probabilities.iloc[-1])
 
+    np.random.seed(42)  # Set a seed for reproducibility
+
     for _ in range(steps):
         if current_regime == 0:
             last_price = ms_result.params['const[0]'] + np.sqrt(ms_result.params['sigma2[0]']) * np.random.randn()
@@ -32,3 +32,4 @@ def forecast_markov_switching(ms_result, steps=5):
         )
 
     return np.array(forecast_values)
+
