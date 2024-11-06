@@ -28,11 +28,15 @@ def forecast():
 @app.route('/api/prices', methods=['GET'])
 def get_prices():
     """API to get historical Brent oil prices."""
-    df = pd.read_csv("data/BrentOilPrices.csv")  # Adjust this line
+    df = pd.read_csv("data/BrentOilPrices.csv")  # Adjust this line based on your data path
+    
+    # Select only 'Date' and 'Price' columns
+    df = df[['Date', 'Price']]  
+    
+    # Remove rows where 'Date' or 'Price' is NaN
+    df = df.dropna(subset=['Date', 'Price'])
 
-    # Convert NaN values to None for JSON serialization
-    df = df.where(pd.notnull(df), None)  # This will replace NaN with None
-
+    # Convert the DataFrame to a dictionary, with each row as a dictionary entry
     return jsonify(df.to_dict(orient='records'))
 
 @app.route('/api/events', methods=['GET'])

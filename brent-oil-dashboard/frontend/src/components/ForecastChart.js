@@ -1,29 +1,80 @@
-import React from 'react';
-import { Line } from 'react-chartjs-2';
-import { Chart, registerables } from 'chart.js';
+// ForecastChart.js
+import React, { useEffect, useState } from "react";
+import { getForecast } from "../api/api";
+import { Line } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
 
-Chart.register(...registerables);
+// Register the required components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
-const ForecastChart = ({ forecastData }) => {
-    const data = {
-        labels: forecastData.map((_, index) => index + 1),
-        datasets: [
-            {
-                label: 'Forecast Prices',
-                data: forecastData,
-                borderColor: 'rgba(255,99,132,1)',
-                borderWidth: 2,
-                fill: false,
-            },
-        ],
+const ForecastChart = () => {
+  const [forecastData, setForecastData] = useState([]);
+
+  useEffect(() => {
+    const fetchForecast = async () => {
+      try {
+        const data = await getForecast(10); // Fetch forecast for the next 10 steps
+        console.log("Forecast data:", data); // Log to see the data structure
+        setForecastData(data);
+      } catch (error) {
+        console.error("Failed to fetch forecast data", error);
+      }
     };
 
-    return (
-        <div>
-            <h2>Forecast</h2>
-            <Line data={data} />
-        </div>
-    );
+    fetchForecast();
+  }, []);
+
+  const chartData = {
+    labels: forecastData.map((_, index) => `Step ${index + 1}`),
+    datasets: [
+      {
+        label: "Forecasted Price",
+        data: forecastData,
+        fill: false,
+        backgroundColor: "rgba(75,192,192,1)",
+        borderColor: "rgba(75,192,192,0.4)",
+      },
+    ],
+  };
+
+  const options = {
+    scales: {
+      x: { title: { display: true, text: "Forecast Step" } },
+      y: { title: { display: true, text: "Price (USD)" } },
+    },
+  };
+
+  return (
+    <div>
+      <h2>Brent Oil Price Forecast</h2>
+      {forecastData.length > 0 ? (
+        <Line
+          key={forecastData.toString()}
+          data={chartData}
+          options={options}
+        />
+      ) : (
+        <p>Loading forecast data...</p>
+      )}
+    </div>
+  );
 };
 
 export default ForecastChart;

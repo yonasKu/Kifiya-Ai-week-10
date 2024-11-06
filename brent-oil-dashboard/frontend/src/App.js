@@ -51,17 +51,22 @@
 
 // export default App;
 
+import React from "react";
 
-import React from 'react';
-import TestAPI from './components/TestAPI'; // Import the TestAPI component
+import ForecastChart from "./components/ForecastChart";
+import HistoricalChart from "./components/HistoricalChart";
+import MetricsDisplay from "./components/MetricsDisplay";
 
 const App = () => {
-    return (
-        <div style={{ padding: '20px' }}>
-            <h1>Financial Dashboard</h1>
-            <TestAPI />
-        </div>
-    );
+  return (
+    <div style={{ padding: "20px" }}>
+      <h1>Financial Dashboard</h1>
+      {/* <TestAPI /> */}
+      <ForecastChart />
+      <HistoricalChart />
+      <MetricsDisplay />
+    </div>
+  );
 };
 
-export default App; 
+export default App;
