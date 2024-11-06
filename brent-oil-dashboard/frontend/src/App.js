@@ -1,6 +1,6 @@
 // // src/App.js
 
-import './styles.css';
+import "./styles.css";
 import React from "react";
 
 import ForecastChart from "./components/ForecastChart";
@@ -12,8 +12,10 @@ const App = () => {
     <div style={{ padding: "20px" }}>
       <h1>Financial Dashboard</h1>
       {/* <TestAPI /> */}
-      <ForecastChart />
       <HistoricalChart />
+
+      <ForecastChart />
+
       <MetricsDisplay />
     </div>
   );
