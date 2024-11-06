@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-// import { getPrices } from "../api/api"; // Make sure this is your API call
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -41,7 +40,6 @@ const HistoricalChart = () => {
 
         // Ensure the data is an array and filter out invalid entries
         if (Array.isArray(data)) {
-          // Filter out entries where 'Price' is null or undefined
           const filteredData = data.filter(
             (item) => item.Price !== null && item.Price !== undefined
           );
@@ -71,6 +69,38 @@ const HistoricalChart = () => {
         borderColor: "rgba(75,192,192,0.4)",
         tension: 0.1,
       },
+      {
+        label: "GDP per Capita (annual %)",
+        data: historicalData.map((item) => item["GDP per cap (annual %)"]),
+        fill: false,
+        backgroundColor: "rgba(153,102,255,1)",
+        borderColor: "rgba(153,102,255,0.4)",
+        tension: 0.1,
+      },
+      {
+        label: "Unemployment Rate",
+        data: historicalData.map((item) => item.Unemployr),
+        fill: false,
+        backgroundColor: "rgba(255,159,64,1)",
+        borderColor: "rgba(255,159,64,0.4)",
+        tension: 0.1,
+      },
+      {
+        label: "Exchange Rate",
+        data: historicalData.map((item) => item["exchange rate"]),
+        fill: false,
+        backgroundColor: "rgba(54,162,235,1)",
+        borderColor: "rgba(54,162,235,0.4)",
+        tension: 0.1,
+      },
+      {
+        label: "Inflation",
+        data: historicalData.map((item) => item["inflation "]),
+        fill: false,
+        backgroundColor: "rgba(255,99,132,1)",
+        borderColor: "rgba(255,99,132,0.4)",
+        tension: 0.1,
+      },
     ],
   };
 
@@ -78,18 +108,24 @@ const HistoricalChart = () => {
   const options = {
     scales: {
       x: { title: { display: true, text: "Year" } }, // Label for x-axis
-      y: { title: { display: true, text: "Price (USD)" } }, // Label for y-axis
+      y: {
+        title: { display: true, text: "Values" }, // Label for y-axis
+        beginAtZero: true,
+      },
     },
     responsive: true,
     plugins: {
       legend: { position: "top" },
-      title: { display: true, text: "Historical Oil Prices" },
+      title: {
+        display: true,
+        text: "Historical Oil Prices and Other Indicators",
+      },
     },
   };
 
   return (
     <div>
-      <h2>Historical Oil Price Chart</h2>
+      <h2>Historical Oil Price and Economic Indicators</h2>
       {historicalData.length > 0 ? (
         <Line data={chartData} options={options} />
       ) : (

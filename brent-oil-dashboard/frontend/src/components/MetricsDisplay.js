@@ -36,7 +36,7 @@ const MetricsDisplay = () => {
     }, []);
 
     // Return loading state if data is not yet available
-    if (!metrics || !events) return <div>Loading...</div>;
+    if (!metrics || !events) return <div className="loading">Loading...</div>;
 
     // Prepare the chart data for Fitted Prices (Line Chart)
     const chartData = {
@@ -48,6 +48,9 @@ const MetricsDisplay = () => {
                 borderColor: 'rgba(75,192,192,1)',
                 backgroundColor: 'rgba(75,192,192,0.2)',
                 fill: true,
+                tension: 0.4,
+                pointRadius: 3,
+                pointHoverRadius: 6,
             }
         ]
     };
@@ -60,29 +63,95 @@ const MetricsDisplay = () => {
                 label: 'Correlation',
                 data: Object.values(events), // Correlation values
                 backgroundColor: 'rgba(54, 162, 235, 0.6)', // Bar color
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1,
             }
         ]
     };
 
     return (
-        <div>
-            {/* Fitted Prices Line Chart */}
-            <div>
-                <h2>Fitted Prices (Line Chart)</h2>
-                <Line data={chartData} options={{ responsive: true }} />
+        <div className="metrics-display">
+            <div className="section">
+                <h2 className="section-title">Fitted Prices (Line Chart)</h2>
+                <Line data={chartData} options={{
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                font: {
+                                    size: 14,
+                                },
+                            },
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0,0,0,0.7)',
+                            bodyColor: '#fff',
+                            titleColor: '#fff',
+                            callbacks: {
+                                label: (context) => `Price: $${context.raw}`,
+                            },
+                        },
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Time (Index)',
+                                font: { size: 14 },
+                            },
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Price (USD)',
+                                font: { size: 14 },
+                            },
+                        },
+                    },
+                }} />
             </div>
 
-            {/* Model Metrics (MAE and RMSE) */}
-            <div style={{ marginTop: '20px' }}>
-                <h3>Model Metrics</h3>
-                <p><strong>Mean Absolute Error (MAE):</strong> {metrics['MAE']}</p>
-                <p><strong>Root Mean Squared Error (RMSE):</strong> {metrics['RMSE']}</p>
+            <div className="section model-metrics">
+                <h3 className="section-title">Model Metrics</h3>
+                <div className="metrics-list">
+                    <p><strong>Mean Absolute Error (MAE):</strong> {metrics['MAE']}</p>
+                    <p><strong>Root Mean Squared Error (RMSE):</strong> {metrics['RMSE']}</p>
+                </div>
             </div>
 
-            {/* Events Correlation Bar Chart */}
-            <div style={{ marginTop: '40px' }}>
-                <h2>Correlation of Events (Bar Chart)</h2>
-                <Bar data={eventChartData} options={{ responsive: true }} />
+            <div className="section">
+                <h2 className="section-title">Correlation of Events (Bar Chart)</h2>
+                <Bar data={eventChartData} options={{
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                font: {
+                                    size: 14,
+                                },
+                            },
+                        },
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Events',
+                                font: { size: 14 },
+                            },
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Correlation Value',
+                                font: { size: 14 },
+                            },
+                            beginAtZero: true,
+                        },
+                    },
+                }} />
             </div>
         </div>
     );
